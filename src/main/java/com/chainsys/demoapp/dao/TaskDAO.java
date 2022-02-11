@@ -36,7 +36,7 @@ public class TaskDAO {
 	public List<Task> findAllTasks() {
 		List<Task> taskList = new ArrayList<Task>();
 
-		String query = "select name,priority,status,created_date from task123";
+		String query = "select id,task_name,created_by,priority,status,created_date from task_demo";
 		Connection con = ConnectionUtil.getDbConnect();
 		Statement stmt;
 		try {
@@ -45,7 +45,7 @@ public class TaskDAO {
 			ResultSet rs = stmt.executeQuery(query);
 
 			while (rs.next()) {
-				Task task=new Task(rs.getString(1), rs.getString(2), rs.getString(3),rs.getDate(4));
+				Task task=new Task(rs.getInt(1),rs.getString(2), rs.getString(3),rs.getString(4), rs.getString(5),rs.getDate(6));
 				taskList.add(task);
 
 			}
@@ -66,17 +66,18 @@ public class TaskDAO {
 	public boolean insertTask(Task task) {
 		Connection con = ConnectionUtil.getDbConnect();
 
-		String query = "insert into task123 (name,priority,status,created_date) values(?,?,?)";
+		String query = "insert into task_demo (task_name,created_by,priority,status,created_date) values(?,?,?,?,?)";
 		boolean flag = false;
 		PreparedStatement stmt = null;
 		try {
 			stmt = con.prepareStatement(query);
 			stmt.setString(1, task.getName());
-			stmt.setString(2, task.getPriority());
-			stmt.setString(3, task.getStatus());
-			stmt.setDate(4, new java.sql.Date(task.getCreatedDate().getTime()));
+			stmt.setString(2,task.getCreatedBy());
+			stmt.setString(3, task.getPriority());
+			stmt.setString(4, task.getStatus());
+			stmt.setDate(5, new java.sql.Date(task.getCreatedDate().getTime()));
 
-			flag = stmt.executeUpdate(query) > 0;
+			flag = stmt.executeUpdate() > 0;
 
 		} catch (SQLException e) {
 
@@ -92,7 +93,7 @@ public class TaskDAO {
 	 */
 	public boolean updateTaskStatus(Task task) {
 		Connection con = ConnectionUtil.getDbConnect();
-		String query = "update table task set status=? where name=? and status='pending'";
+		String query = "update task_demo set status=? where name=? and status='pending'";
 		boolean flag = false;
 		PreparedStatement stmt = null;
 		try {
@@ -116,12 +117,13 @@ public class TaskDAO {
 	 */
 	public boolean updateTaskPriority(Task task) {
 		Connection con = ConnectionUtil.getDbConnect();
-		String query = "update table task set priority=? where name=? and status='pending'";
+		String query = "update task_demo set priority=?,status=? where name=? and status='pending'";
 		boolean flag = false;
 		PreparedStatement stmt = null;
 		try {
 			stmt = con.prepareStatement(query);
-			stmt.setString(2, task.getName());
+			stmt.setString(3, task.getName());
+			stmt.setString(2, task.getStatus());
 			stmt.setString(1, task.getPriority());
 			flag = stmt.executeUpdate(query) > 0;
 
@@ -133,6 +135,32 @@ public class TaskDAO {
 		return flag;
 
 	}
+	/**
+	 * @param task object
+	 * @return true if task is deleted
+	 */
+	public boolean fetchTaskId(Task task)
+	{
+		Connection con = ConnectionUtil.getDbConnect();
+		String query = "selct id from task_demo where name=? and status=? and created_date=?";
+		boolean flag = false;
+		PreparedStatement stmt = null;
+		try {
+			stmt = con.prepareStatement(query);
+			stmt.setString(1, task.getName());
+			stmt.setString(2, task.getStatus());
+			stmt.setDate(3, new java.sql.Date(task.getCreatedDate().getTime()));
+			flag = stmt.executeUpdate(query) > 0;
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+
+		return flag;
+
+		
+	}
 
 	/**
 	 * @param task object
@@ -141,7 +169,7 @@ public class TaskDAO {
 	public boolean deleteTask(Task task)
 	{
 		Connection con = ConnectionUtil.getDbConnect();
-		String query = "delete from task where name=? and status='pending'";
+		String query = "delete from task_demo where name=? and status='pending'";
 		boolean flag = false;
 		PreparedStatement stmt = null;
 		try {

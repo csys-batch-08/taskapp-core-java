@@ -39,7 +39,7 @@ public class UserDAO {
 	public boolean insertUser(User user) {
 		Connection con = ConnectionUtil.getDbConnect();
 
-		String query = "insert into UserSample123 (name,email,password) values('" + user.getName() + "','" + user.getEmail() + "','"
+		String query = "insert into user_demo (user_name,email,password) values('" + user.getName() + "','" + user.getEmail() + "','"
 				+ user.getPassword() + "')";
 		boolean flag = false;
 		Statement stmt = null;
@@ -61,7 +61,7 @@ public class UserDAO {
 	 * @return boolean true if value updated
 	 */
 	public boolean updateUser(User user) {
-		String insertQuery = "update table usersample123 name=?,password=? where email=?";
+		String insertQuery = "update table user_demo user_name=?,password=? where email=?";
 		
 		Connection con = ConnectionUtil.getDbConnect();
 		boolean result = false;
@@ -88,7 +88,7 @@ public class UserDAO {
 	public List<User> findAllUsers() {
 		List<User> userList = new ArrayList<User>();
 
-		String query = "select * from userSample123";
+		String query = "select * from user_demo";
 		Connection con = ConnectionUtil.getDbConnect();
 		Statement stmt;
 		try {
@@ -116,7 +116,7 @@ public class UserDAO {
 	 * @return int user id 
 	 */
 	public int findUserId(User user) {
-		String findUserID = "select id from usersample123 where email= '" + user.getEmail() + "'";
+		String findUserID = "select id from user_demo where email= '" + user.getEmail() + "'";
 		Connection con = ConnectionUtil.getDbConnect();
 		Statement stmt;
 		int userId = 0;
@@ -140,7 +140,7 @@ public class UserDAO {
 	 * @return User Object
 	 */
 	public User findUser(int userId) {
-		String findUser = "select name,email,password from usersample123 where userID= '" + userId + "'";
+		String findUser = "select user_name,email,password from usersample123 where userID= '" + userId + "'";
 		Connection con = ConnectionUtil.getDbConnect();
 		Statement stmt;
 		User user = null;

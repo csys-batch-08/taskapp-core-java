@@ -33,15 +33,15 @@ public class UserValidator {
 	 * @param long mobile number this method is to check user details in the table
 	 * @return User Object if email and password present in the table 
 	 */
-	public User validateUser(String email, String password) {
-		String validateQuery = "select name from user_cafe where email=?,password=?";
+	public static User validateUser(String email, String password) {
+		String validateQuery = "select user_name from user_demo where email=? and password=?";
 		Connection con = ConnectionUtil.getDbConnect();
 		User user = null;
 		try {
 			PreparedStatement stmt = con.prepareStatement(validateQuery);
 			stmt.setString(1, email);
 			stmt.setString(2, password);
-			ResultSet rs = stmt.executeQuery(validateQuery);
+			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				user = new User(rs.getString(1),email,password);
 			} 
